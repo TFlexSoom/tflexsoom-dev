@@ -1,0 +1,2 @@
+# tflexsoom-dev
+This project represents a repetoire of the different skills Tristan (TFlexSoom) has. Using a variety of different backend technologies, Tristan shows how easy it is to perform a small variety of different tasks.

@@ -10,8 +10,7 @@ async function startPromise(resolve, reject) {
         services.construct(); // Create Memory
         await services.start(); // Start Without Configuration
         await services.load(); // Load Based on Configuration
-        await handlers.construct(); // Create Handlers
-        await handlers.serve(); // Use Handlers
+        await handlers.serve(); // Ready Handlers
 
     } catch (e) {
         reject(e);

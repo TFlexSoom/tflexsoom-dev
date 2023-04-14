@@ -1,4 +1,4 @@
-import Service from 'src/service';
+import Service from '../index.js';
 
 export default class MetaService extends Service {
     static INSTANCE = new MetaService();

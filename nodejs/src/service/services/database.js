@@ -1,17 +1,7 @@
-import Service from 'src/service';
+import Service from '../index.js';
 import ConfigurationService from './configurator';
 
 import { Sequelize } from 'sequelize';
-
-
-export function getInstance() {
-    if (!sequelize) {
-        throw new Error("Consistent Database Instance not configured!");
-    }
-
-    return sequelize;
-}
-
 
 export default class DatabaseService extends Service {
     static INSTANCE = new DatabaseService();
@@ -28,17 +18,17 @@ export default class DatabaseService extends Service {
     }
 
     async load() {
-        const config = (configurator.getConfiguration())?.consitent || {};
+        const config = (DatabaseService.configurator.getConfiguration())?.consitent || {};
 
         if (!config.connectionString) {
             console.debug("No SQL Database string provided... defaulting to sqlite");
         }
 
-        sequelize = new Sequelize(config.connectionString || 'sqlite::memory:', {
+        this.sequelize = new Sequelize(config.connectionString || 'sqlite::memory:', {
             pool: config.pool || {}
         });
 
-        for (const m of models) {
+        for (const m of this.models) {
             if (config.verboseSchemas) {
                 console.log("Defining Schema For: " + m + " with " + sequelize);
             }
@@ -46,17 +36,36 @@ export default class DatabaseService extends Service {
             m.classDefine(sequelize);
         }
 
-        await sequelize.sync({ force: true });
+        await this.sequelize.sync({ force: true });
     }
 
     async cleanup() { }
 
     // Call on Start
     addModel(model) {
-        models.add(model);
+        this.models.add(model);
+    }
+
+    getInstance() {
+        if (!this.sequelize) {
+            throw new Error("Consistent Database Instance not configured!");
+        }
+
+        return this.sequelize;
+    }
+
+    async testConnection() {
+        try {
+            const [results, metadata] = await this.sequelize.query("SELECT 1;");
+        } catch (e) {
+            console.error(`SQL Error: ${e}`)
+            return false;
+        }
+
+        return true;
     }
 
     getName() {
-        return "Database Service";
+        return "DATABASE SERVICE";
     }
 }

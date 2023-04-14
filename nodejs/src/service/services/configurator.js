@@ -1,6 +1,5 @@
+import Service from '../index.js';
 import { existsSync } from 'node:fs';
-
-import Service from 'src/service';
 
 export default class ConfigurationService extends Service {
     static INSTANCE = new ConfigurationService();

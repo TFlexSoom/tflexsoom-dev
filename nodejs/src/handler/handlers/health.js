@@ -1,4 +1,3 @@
-
 import * as express from 'express';
 import MetaService from '../../service/services/meta.js';
 import DatabaseService from '../../service/services/database.js';

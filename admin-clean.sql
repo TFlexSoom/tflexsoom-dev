@@ -1,0 +1,4 @@
+DROP DATABASE IF EXISTS `tflexsoom_dev`;
+DROP USER IF EXISTS 'tflexsoom_service';
+DROP ROLE IF EXISTS `webapp`;
+FLUSH PRIVILEGES;

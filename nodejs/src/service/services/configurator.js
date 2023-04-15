@@ -1,5 +1,7 @@
 import Service from '../index.js';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { cwd } from 'node:process';
 
 export default class ConfigurationService extends Service {
     static INSTANCE = new ConfigurationService();
@@ -10,7 +12,9 @@ export default class ConfigurationService extends Service {
             return;
         }
 
-        this.configuration = require("./configuration-node.json");
+        this.configuration = JSON.parse(
+            readFileSync(join(cwd(), "/configuration-node.json"))
+        );
     }
 
     getConfiguration() {

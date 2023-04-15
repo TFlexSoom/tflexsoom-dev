@@ -18,15 +18,14 @@ export default class DatabaseService extends Service {
     }
 
     async load() {
-        const config = (DatabaseService.configurator.getConfiguration())?.consitent || {};
+        const config = (DatabaseService.configurator.getConfiguration())?.mysql || {};
 
-        if (!config.connectionString) {
+        if (!config.uri) {
             console.debug("No SQL Database string provided... defaulting to sqlite");
+            config.uri = 'sqlite::memory';
         }
 
-        this.sequelize = new Sequelize(config.connectionString || 'sqlite::memory:', {
-            pool: config.pool || {}
-        });
+        this.sequelize = new Sequelize(config.uri, { ...config });
 
         for (const m of this.models) {
             if (config.verboseSchemas) {

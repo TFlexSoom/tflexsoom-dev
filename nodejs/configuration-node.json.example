@@ -1,0 +1,12 @@
+{
+    "mysql": {
+        "connectionString": "mysql://tflexsoom_service:password@localhost:3306/tflexsoom_dev",
+        "pool": {
+            "max": 10
+        }
+    },
+    "content": {
+        "useCdn": false,
+        "urlRoot": "https://mycdn-derp-derp.carriontech.com/"
+    }
+}

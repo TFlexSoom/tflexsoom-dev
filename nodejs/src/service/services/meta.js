@@ -18,8 +18,6 @@ export default class MetaService extends Service {
         this.lastLoad = Date.now();
     }
 
-    async cleanup() { }
-
     getIsConstructed() {
         return this.isConstructed;
     }

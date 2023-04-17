@@ -37,16 +37,20 @@ export default class TrackerService extends Service {
     }
 
     async getVisitorCount(path) {
+        if (!this.isOn) {
+            return;
+        }
+
         const trackedPath = path || "";
 
-        VisitorTrack.findAll({
+        return VisitorTrack.findAll({
             where: {
                 path: trackedPath,
                 lastVisited: {
                     [Op.gt]: date.addMinutes(Date.now(), -5)
                 }
             }
-        })
+        });
     }
 
     getName() {
@@ -81,7 +85,7 @@ class VisitorTrack extends Model {
             {
                 sequelize,
                 modelName: "visitor_track",
-                indexes: [{ fields: ['path', 'lastVisited'] }]
+                indexes: [{ fields: ['path'] }, { fields: ['lastVisited'] }]
             }
         );
     }

@@ -8,7 +8,7 @@ export const router = express.Router({
 router.post("/tracker", async (req, res, next) => {
     const trackingService = TrackerService.INSTANCE;
 
-    trackingService.track(req.ip, req.query?.path);
+    await trackingService.track(req.ip, req.query?.path);
 
     res.status(200).send();
 });
@@ -17,6 +17,6 @@ router.get("/tracker", async (req, res, next) => {
     const trackingService = TrackerService.INSTANCE;
 
     res.status(200).send({
-        visitors: trackingService.getVisitorCount(req.query?.path),
+        visitors: await trackingService.getVisitorCount(req.query?.path),
     });
 });

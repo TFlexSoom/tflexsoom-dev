@@ -26,6 +26,17 @@ export default class LeaderboardService extends Service {
         });
     }
 
+    async clearName(name) {
+        leaderboards = Leaderboard.findAll({
+            where: {
+                name: name,
+            }
+        });
+
+        leaderboards.forEach((item) => { item.name = "REDACTED"; });
+        sequelize.sync();
+    }
+
     async getLeaderboard() {
         if (!this.isOn) {
             return;

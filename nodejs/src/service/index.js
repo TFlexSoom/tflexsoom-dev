@@ -23,17 +23,25 @@ export default class Service {
         }
     }
 
-    // Load all services in `serviceList`
-    static async load() {
+    // Config all services in `serviceList`
+    static async config() {
         // TODO asyncio this
         for (const service of Service.serviceList) {
-            await service.load();
+            await service.config();
+        }
+    }
+
+    static async cache() {
+        // TODO asyncio this
+        for (const service of Service.serviceList) {
+            await service.cache();
         }
     }
 
     construct() { }
     async start() { }
-    async load() { }
+    async config() { }
+    async cache() { }
     async cleanup() { }
     getName() { return "DEFAULT" }
 }

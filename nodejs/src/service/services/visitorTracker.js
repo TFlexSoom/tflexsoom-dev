@@ -16,7 +16,7 @@ export default class TrackerService extends Service {
         dbService.addModel(VisitorTrack);
     }
 
-    async load() {
+    async config() {
         const config = ConfigurationService.INSTANCE.getConfiguration()?.visitorTracker || {};
         this.isOn = config?.isOn || true;
         this.secret = config?.secret || this.secret;

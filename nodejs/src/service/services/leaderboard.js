@@ -2,8 +2,6 @@ import Service from '../index.js';
 import ConfigurationService from './configurator.js';
 import DatabaseService from './database.js';
 
-import date from 'date-and-time';
-
 export default class LeaderboardService extends Service {
     static INSTANCE = new LeaderboardService();
     isOn = false;
@@ -13,12 +11,16 @@ export default class LeaderboardService extends Service {
         dbService.addModel(Leaderboard);
     }
 
-    async load() {
+    async config() {
         const config = ConfigurationService.INSTANCE.getConfiguration()?.leaderboard || {};
         this.isOn = config?.isOn || true;
     }
 
     async addNewScore(name, score) {
+        if (!this.isOn) {
+            return;
+        }
+
         Leaderboard.create({
             name: name,
             score: score,
@@ -27,19 +29,24 @@ export default class LeaderboardService extends Service {
     }
 
     async clearName(name) {
+        if (!this.isOn) {
+            return;
+        }
+
         leaderboards = Leaderboard.findAll({
             where: {
                 name: name,
             }
         });
 
-        leaderboards.forEach((item) => { item.name = "REDACTED"; });
-        sequelize.sync();
+        await leaderboards.forEach(async (item) => {
+            await item.update({ name: "REDACTED" });
+        });
     }
 
     async getLeaderboard() {
         if (!this.isOn) {
-            return;
+            return [];
         }
 
         return Leaderboard.findAll({
@@ -49,7 +56,7 @@ export default class LeaderboardService extends Service {
     }
 
     getName() {
-        return "TRACKER SERVICE";
+        return "LEADERBOARD SERVICE";
     }
 }
 

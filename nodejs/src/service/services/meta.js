@@ -14,7 +14,7 @@ export default class MetaService extends Service {
         this.isStarted = true;
     }
 
-    async load() {
+    async config() {
         this.lastLoad = Date.now();
     }
 

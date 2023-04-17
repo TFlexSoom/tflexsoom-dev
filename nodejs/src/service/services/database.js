@@ -9,15 +9,7 @@ export default class DatabaseService extends Service {
     sequelize = null;
     models = new Set();
 
-    construct() {
-
-    }
-
-    async start() {
-
-    }
-
-    async load() {
+    async config() {
         const config = (DatabaseService.configurator.getConfiguration())?.mysql || {};
 
         if (!config.uri) {
@@ -37,8 +29,6 @@ export default class DatabaseService extends Service {
 
         await this.sequelize.sync({ force: true });
     }
-
-    async cleanup() { }
 
     // Call on Start
     addModel(model) {

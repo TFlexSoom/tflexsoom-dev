@@ -49,9 +49,9 @@ export default class AdventureService extends Service {
         return "";
     }
 
-    async makeMove(playerId, signage) {
+    async makeMove(playerId, signage, action) {
         if (!this.isOn) {
-            return RESPONSES.turnedOff;
+            return RESPONSES.turnedOff(null);
         }
 
         const playerStats = DATA_INSTANCE.getPlayerState(playerId, signage);

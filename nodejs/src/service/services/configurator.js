@@ -7,7 +7,7 @@ export default class ConfigurationService extends Service {
     static INSTANCE = new ConfigurationService();
     configuration = {};
 
-    async load() {
+    async config() {
         if (!existsSync("./configuration-node.json")) {
             return;
         }

@@ -2,10 +2,13 @@ import Service from '../index.js';
 import ConfigurationService from './configurator.js';
 import DatabaseService from './database.js';
 
-import createVerify from 'node:crypto';
+import { createVerify } from 'node:crypto';
+
+import pkg from 'sequelize';
+const { Model, DataTypes } = pkg;
 
 export default class AdventureDataService extends Service {
-    static INSTANCE = new AdventureService();
+    static INSTANCE = new AdventureDataService();
     isOn = false;
     static VERIFIER = createVerify('rsa-sha256');
     rooms = {};
@@ -83,7 +86,7 @@ export default class AdventureDataService extends Service {
         for (const level in dbPlayerLevel) {
             levels.push({ level: level.level, experience: level.experience });
         }
-        this.playerLevels = PlayerLevelMap(levels);
+        this.playerLevels = new PlayerLevelMap(levels);
 
         // Next Player Abilities
         const abilities = {};

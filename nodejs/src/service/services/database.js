@@ -1,7 +1,8 @@
 import Service from '../index.js';
 import ConfigurationService from './configurator';
 
-import { Sequelize } from 'sequelize';
+import pkg from 'sequelize';
+const { Sequelize } = pkg;
 
 export default class DatabaseService extends Service {
     static INSTANCE = new DatabaseService();
@@ -21,13 +22,13 @@ export default class DatabaseService extends Service {
 
         for (const m of this.models) {
             if (config.verboseSchemas) {
-                console.log("Defining Schema For: " + m + " with " + sequelize);
+                console.log("Defining Schema For: " + m + " with " + this.sequelize);
             }
 
-            m.classDefine(sequelize);
+            m.classDefine(this.sequelize);
         }
 
-        await this.sequelize.sync({ force: true });
+        await this.sequelize.sync({ force: config?.dropTables });
     }
 
     // Call on Start

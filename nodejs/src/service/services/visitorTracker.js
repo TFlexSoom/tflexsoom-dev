@@ -2,9 +2,11 @@ import Service from '../index.js';
 import ConfigurationService from './configurator.js';
 import DatabaseService from './database.js';
 
-import createHash from 'node:crypto';
-import { Op } from 'sequelize';
+import { createHash } from 'node:crypto';
 import date from 'date-and-time';
+
+import pkg from 'sequelize';
+const { Model, Op, DataTypes } = pkg;
 
 export default class TrackerService extends Service {
     static INSTANCE = new TrackerService();

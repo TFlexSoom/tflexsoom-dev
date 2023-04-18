@@ -2,6 +2,9 @@ import Service from '../index.js';
 import ConfigurationService from './configurator.js';
 import DatabaseService from './database.js';
 
+import pkg from 'sequelize';
+const { Model, Op, DataTypes } = pkg;
+
 export default class LeaderboardService extends Service {
     static INSTANCE = new LeaderboardService();
     isOn = false;

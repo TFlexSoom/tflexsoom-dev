@@ -2,9 +2,12 @@ import Service from '../index.js';
 import ConfigurationService from './configurator.js';
 import DatabaseService from './database.js';
 
+import createVerify from 'node:crypto';
+
 export default class AdventureDataService extends Service {
     static INSTANCE = new AdventureService();
     isOn = false;
+    static VERIFIER = createVerify('rsa-sha256');
     rooms = {};
     monsters = {};
     playerLevels = {};
@@ -27,6 +30,8 @@ export default class AdventureDataService extends Service {
     async load() {
         const config = ConfigurationService.INSTANCE.getConfiguration()?.adventure || {};
         this.isOn = config?.isOn || true;
+        this.cryptoPassword = config?.cryptoPassword || this.cryptoPassword;
+        this.cryptoSalt = config?.cryptoSalt || this.cryptoSalt;
     }
 
     async cache() {
@@ -123,6 +128,45 @@ export default class AdventureDataService extends Service {
             }
         }
         this.playerClasses = classes;
+    }
+
+    async createGame(classId, publicKey) {
+        if (!this.playerClasses[classId]) {
+            return null;
+        }
+
+        const startingBenefits = this.playerClasses[classId].benefits[1];
+
+        const stats = await PlayerStats.create({
+            publicKey: publicKey,
+            roomId: 1,
+            classId: classId,
+            experience: 0,
+            health: startingBenefits.health,
+            mana: 0,
+            attackMin: startingBenefits.attackMin,
+            attackMax: startingBenefits.attackMax,
+            gold: 0
+        });
+
+        return stats;
+    }
+
+    async getPlayerState(playerId, signage) {
+        const playerStats = PlayerStats.findByPk(playerId);
+        if (!playerStats) {
+            console.log(`${playerId} does not exist!`);
+            return null;
+        }
+
+        VERIFIER.update(signage);
+        const key = playerStats.publicKey;
+        if (!VERIFIER.verify(VERIFIER_OPTIONS, key, 'utf8')) {
+            console.log("Invalid Signature!");
+            return null;
+        }
+
+        return playerStats;
     }
 
     getName() {
@@ -435,10 +479,6 @@ class PlayerStats extends Model {
                     type: DataTypes.INTEGER,
                     autoIncrement: true,
                     primaryKey: true
-                },
-                privateKey: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
                 },
                 publicKey: {
                     type: DataTypes.STRING,

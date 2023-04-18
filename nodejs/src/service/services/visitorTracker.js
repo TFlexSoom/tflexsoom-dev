@@ -2,12 +2,13 @@ import Service from '../index.js';
 import ConfigurationService from './configurator.js';
 import DatabaseService from './database.js';
 
-import sha256 from 'crypto-js/sha256';
+import createHash from 'node:crypto';
 import { Op } from 'sequelize';
 import date from 'date-and-time';
 
 export default class TrackerService extends Service {
     static INSTANCE = new TrackerService();
+    static HASH = createHash("sha256");
     isOn = false;
     secret = "123456";
 
@@ -28,10 +29,11 @@ export default class TrackerService extends Service {
         }
 
         const trackedPath = path || "";
+        HASH.update(ipAddress + this.secret);
 
         VisitorTrack.create({
             path: trackedPath,
-            visitorHash: sha256(ipAddress + this.secret).toString().substring(0, 6),
+            visitorHash: HASH.digest('hex').substring(0, 6),
             lastVisited: Date.now(),
         });
     }
@@ -42,11 +44,12 @@ export default class TrackerService extends Service {
         }
 
         await this.track(ipAddress, limitKey);
+        HASH.update(ipAddress + this.secret);
 
         const visitors = VisitorTrack.findAll({
             where: {
                 path: limitKey,
-                visitorHash: sha256(ipAddress + this.secret).toString().substring(0, 6),
+                visitorHash: HASH.digest('hex').substring(0, 6),
                 lastVisited: {
                     [Op.gt]: date.addDays(Date.now(), -1)
                 }

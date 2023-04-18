@@ -23,21 +23,21 @@ export default class AdventureService extends Service {
         this.gamesPerDay = config?.gamesPerDay || this.gamesPerDay;
     }
 
-    async createGame(ipAddress) {
+    async createGame(ipAddress, classId, publicKey) {
         const trackerService = TrackerService.INSTANCE;
         if (!trackerService.limit(ipAddress, this.limitKey, this.gamesPerDay)) {
-            return DATA_INSTANCE.emptyPlayerStats();
+            return null;
         }
 
-        return DATA_INSTANCE.createGame();
+        return DATA_INSTANCE.createGame(classId, publicKey);
     }
 
-    async getLatestMessageFromId(playerId, token) {
+    async getLatestMessageFromId(playerId, signage) {
         if (!this.isOn) {
             return RESPONSES.turnedOff(null);
         }
 
-        const playerStats = DATA_INSTANCE.getPlayerState(playerId, token);
+        const playerStats = DATA_INSTANCE.getPlayerState(playerId, signage);
         if (!playerStats) {
             return RESPONSES.unauthorized(null);
         }
@@ -49,12 +49,12 @@ export default class AdventureService extends Service {
         return "";
     }
 
-    async makeMove(playerId, token) {
+    async makeMove(playerId, signage) {
         if (!this.isOn) {
             return RESPONSES.turnedOff;
         }
 
-        const playerStats = DATA_INSTANCE.getPlayerState(playerId, token);
+        const playerStats = DATA_INSTANCE.getPlayerState(playerId, signage);
         if (!playerStats) {
             return RESPONSES.unauthorized(null);
         }

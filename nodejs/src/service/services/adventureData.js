@@ -436,6 +436,14 @@ class PlayerStats extends Model {
                     autoIncrement: true,
                     primaryKey: true
                 },
+                privateKey: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                publicKey: {
+                    type: DataTypes.STRING,
+                    allowNull: true,
+                },
                 roomId: {
                     type: DataTypes.INTEGER,
                     allowNull: false,

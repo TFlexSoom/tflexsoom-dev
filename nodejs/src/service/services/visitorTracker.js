@@ -36,6 +36,26 @@ export default class TrackerService extends Service {
         });
     }
 
+    async limit(ipAddress, limitKey, limitVal) {
+        if (!this.isOn) {
+            return true;
+        }
+
+        await this.track(ipAddress, limitKey);
+
+        const visitors = VisitorTrack.findAll({
+            where: {
+                path: limitKey,
+                visitorHash: sha256(ipAddress + this.secret).toString().substring(0, 6),
+                lastVisited: {
+                    [Op.gt]: date.addDays(Date.now(), -1)
+                }
+            }
+        });
+
+        return visitors.length >= limitVal;
+    }
+
     async getVisitorCount(path) {
         if (!this.isOn) {
             return;

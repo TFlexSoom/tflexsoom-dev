@@ -58,7 +58,7 @@ export default class AdventureDataService extends Service {
         }
 
         for (const connection in dbConnections) {
-            if (!classes[connection.fromRoom]) {
+            if (!rooms[connection.fromRoom]) {
                 console.error(`Class: ${connection.fromRoom} does not exist from connection ${connection.id}`);
                 continue;
             }
@@ -155,7 +155,7 @@ export default class AdventureDataService extends Service {
         return stats;
     }
 
-    async getPlayerState(playerId, signage) {
+    async getPlayerStats(playerId, signage) {
         const playerStats = PlayerStats.findByPk(playerId);
         if (!playerStats) {
             console.log(`${playerId} does not exist!`);
@@ -170,6 +170,26 @@ export default class AdventureDataService extends Service {
         }
 
         return playerStats;
+    }
+
+    async getPlayerLevels() {
+        return this.playerLevels;
+    }
+
+    async getPlayerClass(classId) {
+        return this.playerClasses[classId];
+    }
+
+    async getPlayerClassAbilities() {
+        return this.playerAbilities;
+    }
+
+    async getRoom(roomId) {
+        return this.rooms[roomId];
+    }
+
+    async getMonster(monsterId) {
+        return this.monsters[monsterId];
     }
 
     getName() {

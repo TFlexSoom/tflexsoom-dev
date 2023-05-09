@@ -29,7 +29,7 @@ export default class AdventureService extends Service {
             return null;
         }
 
-        return DATA_INSTANCE.createGame(classId, publicKey);
+        return AdventureService.DATA_INSTANCE.createGame(classId, publicKey);
     }
 
     async getLatestMessageFromId(playerId, signage) {
@@ -37,16 +37,56 @@ export default class AdventureService extends Service {
             return RESPONSES.turnedOff(null);
         }
 
-        const playerStats = DATA_INSTANCE.getPlayerState(playerId, signage);
+        const playerStats = AdventureService.DATA_INSTANCE.getPlayerState(playerId, signage);
         if (!playerStats) {
             return RESPONSES.unauthorized(null);
         }
 
-        return this.__getLatestMessage(playerStats);
+        return this.__getGameResponse(playerStats);
     }
 
-    async __getLatestMessage(playerState) {
-        return "";
+    async __getGameResponse(playerStats) {
+        if (playerStats.health <= 0) {
+            return RESPONSES.deathResp(playerStats)
+        }
+
+        const classId = playerStats?.classId
+        const levels = await AdventureDataService.DATA_INSTANCE.getPlayerLevels(classId);
+        const curLevel = calculateLevel(playerStats?.experience, levels);
+        const playerClass = await AdventureService.DATA_INSTANCE.getPlayerClass(classId);
+        const abilities = await AdventureService.DATA_INSTANCE.getPlayerClassAbilities();
+        const player = {
+            experience: playerStats?.experience,
+            health: playerStats?.health,
+            maxHealth: this.calculateMaxHealth(curLevel, playerClass?.benefits),
+            mana: playerStats?.mana,
+            attackMin: playerStats?.attackMin,
+            attackMax: playerStats?.attackMax,
+            gold: playerStats?.gold,
+            className: playerClass?.name,
+            classDescription: playerClass?.description,
+            abilities: this.filterAbilities(curLevel, playerClass?.benefits, abilities),
+        }
+
+        const room = await AdventureService.DATA_INSTANCE.getRoom(playerStats?.roomId);
+        const monster = room.monsterId && await AdventureDataService.DATA_INSTANCE.getMonster(room.monsterId);
+        const game = {
+            player: player,
+            room: room,
+            monster: monster || null,
+        };
+
+        return response(game, "The Game Awaits Your Next Move");
+    }
+
+    calculateMaxHealth(currentLevel, benefits) {
+        // TODO
+        return 100;
+    }
+
+    filterAbilities(currentLevel, benefits, abilities) {
+        // TODO
+        return abilities;
     }
 
     async makeMove(playerId, signage, action) {
@@ -54,16 +94,12 @@ export default class AdventureService extends Service {
             return RESPONSES.turnedOff(null);
         }
 
-        const playerStats = DATA_INSTANCE.getPlayerState(playerId, signage);
+        const playerStats = AdventureService.DATA_INSTANCE.getPlayerStats(playerId, signage);
         if (!playerStats) {
             return RESPONSES.unauthorized(null);
         }
 
-        if (playerStats.health <= 0) {
-            return RESPONSES.deathResp(playerStats)
-        }
-
-        return this.__getLatestMessage(playerStats);
+        return this.__getGameResponse(playerStats);
     }
 
     getName() {
@@ -71,14 +107,18 @@ export default class AdventureService extends Service {
     }
 }
 
-function errorResponse(errorNo) {
-    return (playerStatus) => { return { response: "", error: errorNo } };
+function response(game = {}, message = "", error = 0) {
+    return { game: game, message: message, error: error };
 }
 
-function messageWithNoError(msg) {
-    return { response: msg, error: 0 }
+function messageWithNoError(message) {
+    return response(message = message);
 }
 
 function deathResp(playerStats) {
     return messageWithNoError(`${playerStats.name} is dead with ${playerStats.gold} gold`);
+}
+
+function errorResponse(error) {
+    return (playerStatus) => { return response(error = error) };
 }

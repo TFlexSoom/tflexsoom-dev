@@ -80,13 +80,30 @@ export default class AdventureService extends Service {
     }
 
     calculateMaxHealth(currentLevel, benefits) {
-        // TODO
-        return 100;
+        let health = 0;
+
+        for (const benefit of benefits) {
+            if (benefit.level <= currentLevel) {
+                health += benefit.health;
+            }
+        }
+
+        return health;
     }
 
-    filterAbilities(currentLevel, benefits, abilities) {
-        // TODO
-        return abilities;
+    filterCurrentAbilities(currentLevel, benefits, abilities) {
+        let filteredAbilities = [];
+
+        for (const benefit of benefits) {
+            if (benefit.level <= currentLevel) {
+                const ability = abilities[benefit.abilityId];
+                if (ability) {
+                    filteredAbilities.push(ability);
+                }
+            }
+        }
+
+        return filteredAbilities;
     }
 
     async makeMove(playerId, signage, action) {

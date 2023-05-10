@@ -10,9 +10,12 @@ const { Model, Op, DataTypes } = pkg;
 
 export default class TrackerService extends Service {
     static INSTANCE = new TrackerService();
-    static HASH = createHash("sha256");
     isOn = false;
     secret = "123456";
+
+    hash(str) {
+        return createHash("sha256").update(str).digest('hex');
+    }
 
     async start() {
         const dbService = DatabaseService.INSTANCE;
@@ -31,13 +34,24 @@ export default class TrackerService extends Service {
         }
 
         const trackedPath = path || "";
-        HASH.update(ipAddress + this.secret);
 
-        VisitorTrack.create({
-            path: trackedPath,
-            visitorHash: HASH.digest('hex').substring(0, 6),
-            lastVisited: Date.now(),
+        const [tracking, isCreated] = await VisitorTrack.findOrCreate({
+            where: {
+                path: trackedPath,
+                visitorHash: this.hash(ipAddress + this.secret).substring(0, 6),
+            },
+            defaults: {
+                lastVisited: new Date(),
+            }
         });
+
+        if (isCreated) {
+            console.log(`New Tracking Entry Created ${tracking?.visitorHash}`)
+            return;
+        }
+
+        tracking.lastVisited = new Date();
+        await tracking.save()
     }
 
     async limit(ipAddress, limitKey, limitVal) {
@@ -46,14 +60,13 @@ export default class TrackerService extends Service {
         }
 
         await this.track(ipAddress, limitKey);
-        HASH.update(ipAddress + this.secret);
 
         const visitors = VisitorTrack.findAll({
             where: {
                 path: limitKey,
-                visitorHash: HASH.digest('hex').substring(0, 6),
+                visitorHash: this.hash(ipAddress + this.secret).substring(0, 6),
                 lastVisited: {
-                    [Op.gt]: date.addDays(Date.now(), -1)
+                    [Op.gt]: date.addDays(new Date(), -1)
                 }
             }
         });
@@ -72,7 +85,7 @@ export default class TrackerService extends Service {
             where: {
                 path: trackedPath,
                 lastVisited: {
-                    [Op.gt]: date.addMinutes(Date.now(), -5)
+                    [Op.gt]: date.addMinutes(new Date(), -5)
                 }
             }
         });

@@ -9,8 +9,10 @@ export default class AdventureService extends Service {
     static RESPONSES = {
         turnedOff: errorResponse(1),
         unauthorized: errorResponse(2),
+        notFound: errorResponse(3),
         death: deathResp,
     };
+    static ACTION_MAP = {}
 
     isOn = true;
     limitKey = "adventure";
@@ -34,12 +36,12 @@ export default class AdventureService extends Service {
 
     async getLatestMessageFromId(playerId, signage) {
         if (!this.isOn) {
-            return RESPONSES.turnedOff(null);
+            return AdventureService.RESPONSES.turnedOff(null);
         }
 
         const playerStats = AdventureService.DATA_INSTANCE.getPlayerState(playerId, signage);
         if (!playerStats) {
-            return RESPONSES.unauthorized(null);
+            return AdventureService.RESPONSES.unauthorized(null);
         }
 
         return this.__getGameResponse(playerStats);
@@ -47,7 +49,7 @@ export default class AdventureService extends Service {
 
     async __getGameResponse(playerStats) {
         if (playerStats.health <= 0) {
-            return RESPONSES.deathResp(playerStats)
+            return AdventureService.RESPONSES.deathResp(playerStats)
         }
 
         const classId = playerStats?.classId
@@ -113,7 +115,16 @@ export default class AdventureService extends Service {
 
         const playerStats = AdventureService.DATA_INSTANCE.getPlayerStats(playerId, signage);
         if (!playerStats) {
-            return RESPONSES.unauthorized(null);
+            return AdventureService.RESPONSES.unauthorized(null);
+        }
+
+        const actionMapping = AdventureService.ACTION_MAP[action];
+        if (!actionMapping) {
+            return AdventureService.RESPONSES.notFound(null);
+        }
+
+        if (!actionMapping.impl(playerStats)) {
+            return AdventureService.RESPONSES.notFound(null);
         }
 
         return this.__getGameResponse(playerStats);

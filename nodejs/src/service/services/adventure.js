@@ -12,7 +12,12 @@ export default class AdventureService extends Service {
         notFound: errorResponse(3),
         death: deathResp,
     };
-    static ACTION_MAP = {}
+
+    static ACTION_MAP = {
+        attack: { impl: attackImpl },
+        move: { impl: moveImpl },
+        ability: { impl: abilityImpl },
+    };
 
     isOn = true;
     limitKey = "adventure";
@@ -108,7 +113,7 @@ export default class AdventureService extends Service {
         return filteredAbilities;
     }
 
-    async makeMove(playerId, signage, action) {
+    async makeMove(playerId, signage, action, params) {
         if (!this.isOn) {
             return RESPONSES.turnedOff(null);
         }
@@ -123,7 +128,9 @@ export default class AdventureService extends Service {
             return AdventureService.RESPONSES.notFound(null);
         }
 
-        if (!actionMapping.impl(playerStats)) {
+        const responses = [];
+        const isAllowed = await actionMapping.impl(params, playerStats, responses);
+        if (!isAllowed) {
             return AdventureService.RESPONSES.notFound(null);
         }
 
@@ -148,5 +155,51 @@ function deathResp(playerStats) {
 }
 
 function errorResponse(error) {
-    return (playerStatus) => { return response(error = error) };
+    return (playerStats) => { return response(error = error) };
+}
+
+async function attackImpl(params, playerStats) {
+    const {} = params;
+    const {attackMax, attackMin} = playerStats;
+    
+    const difference = attackMax - attackMin;
+    const amount = Math.random() * difference + attackMin;
+    const canDamage = await damage(amount, playerStats);
+    if(!canDamage) {
+        return false;
+    }
+
+    await tickRoom(playerStats);
+    return true;
+}
+
+async function moveImpl(params, playerStats) {
+    const { dest } = params;
+
+    return true;
+}
+
+async function abilityImpl(params, playerStats) {
+    const { abilityId } = params;
+
+    await tickRoom(playerStats);
+    return true;
+}
+
+async function damage(amount, playerStats) {
+    const { enemyHealth } = playerStats;
+    if(enemyHealth <= 0) {
+        return false;
+    }
+
+    playerStats.set({
+        enemyHealth: enemyHealth - amount,
+    });
+
+    await playerStats.save();
+    return true;
+}
+
+async function tickRoom(playerStats) {
+
 }

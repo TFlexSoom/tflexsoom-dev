@@ -538,6 +538,12 @@ class PlayerStats extends Model {
                 gold: {
                     type: DataTypes.INTEGER,
                     allowNull: false,
+                    defaultValue: 0,
+                },
+                enemyHealth: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                    defaultValue: 0,
                 }
             },
             {

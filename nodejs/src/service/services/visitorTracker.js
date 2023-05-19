@@ -59,19 +59,21 @@ export default class TrackerService extends Service {
             return true;
         }
 
-        await this.track(ipAddress, limitKey);
-
-        const visitors = VisitorTrack.findAll({
+        const visitors = await VisitorTrack.findAll({
             where: {
                 path: limitKey,
                 visitorHash: this.hash(ipAddress + this.secret).substring(0, 6),
                 lastVisited: {
-                    [Op.gt]: date.addDays(new Date(), -1)
+                    [Op.gt]: date.addMinutes(new Date(), -5)
                 }
             }
         });
 
-        return visitors.length >= limitVal;
+        await this.track(ipAddress, limitKey);
+
+        return !!visitors;
+        // TODO fix to allow limits
+        // return visitors.length < limitVal;
     }
 
     async getVisitorCount(path) {

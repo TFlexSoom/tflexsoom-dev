@@ -30,6 +30,10 @@ export default class AdventureService extends Service {
         this.gamesPerDay = config?.gamesPerDay || this.gamesPerDay;
     }
 
+    async isAdventureOn() {
+        return this.isOn;
+    }
+
     async createGame(ipAddress, classId, publicKey) {
         const trackerService = TrackerService.INSTANCE;
         if (!trackerService.limit(ipAddress, this.limitKey, this.gamesPerDay)) {

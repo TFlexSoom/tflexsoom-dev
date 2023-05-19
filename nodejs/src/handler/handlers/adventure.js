@@ -11,7 +11,7 @@ export const router = express.Router({
 
 router.get("/adventure/playing", async (req, res, next) => {
     return res.status(200).send({
-        playing: configurator.getConfiguration()?.adventure?.isOn,
+        playing: await adventure.isAdventureOn(),
     });
 });
 

@@ -71,9 +71,7 @@ export default class TrackerService extends Service {
 
         await this.track(ipAddress, limitKey);
 
-        return !!visitors;
-        // TODO fix to allow limits
-        // return visitors.length < limitVal;
+        return visitors.length <= limitVal;
     }
 
     async getVisitorCount(path) {

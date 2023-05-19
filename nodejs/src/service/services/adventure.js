@@ -62,7 +62,7 @@ export default class AdventureService extends Service {
         }
 
         const classId = playerStats?.classId
-        const levels = await AdventureDataService.DATA_INSTANCE.getPlayerLevels(classId);
+        const levels = await AdventureService.DATA_INSTANCE.getPlayerLevels(classId);
         const curLevel = calculateLevel(playerStats?.experience, levels);
         const playerClass = await AdventureService.DATA_INSTANCE.getPlayerClass(classId);
         const abilities = await AdventureService.DATA_INSTANCE.getPlayerClassAbilities();
@@ -122,7 +122,7 @@ export default class AdventureService extends Service {
             return RESPONSES.turnedOff(null);
         }
 
-        const playerStats = AdventureService.DATA_INSTANCE.getPlayerStats(playerId, signage);
+        const playerStats = await AdventureService.DATA_INSTANCE.getPlayerStats(playerId, signage);
         if (!playerStats) {
             return AdventureService.RESPONSES.unauthorized(null);
         }
@@ -162,37 +162,37 @@ function errorResponse(error) {
     return (playerStats) => { return response(error = error) };
 }
 
-async function attackImpl(params, playerStats) {
-    const {} = params;
-    const {attackMax, attackMin} = playerStats;
-    
+async function attackImpl(params, playerStats, responses) {
+    const { } = params;
+    const { attackMax, attackMin } = playerStats;
+
     const difference = attackMax - attackMin;
     const amount = Math.random() * difference + attackMin;
-    const canDamage = await damage(amount, playerStats);
-    if(!canDamage) {
+    const canDamage = await damageMonster(amount, playerStats, responses);
+    if (!canDamage) {
         return false;
     }
 
-    await tickRoom(playerStats);
+    await tickRoom(playerStats, responses);
     return true;
 }
 
-async function moveImpl(params, playerStats) {
+async function moveImpl(params, playerStats, responses) {
     const { dest } = params;
 
     return true;
 }
 
-async function abilityImpl(params, playerStats) {
+async function abilityImpl(params, playerStats, responses) {
     const { abilityId } = params;
 
-    await tickRoom(playerStats);
+    await tickRoom(playerStats, responses);
     return true;
 }
 
-async function damage(amount, playerStats) {
+async function damageMonster(amount, playerStats, responses) {
     const { enemyHealth } = playerStats;
-    if(enemyHealth <= 0) {
+    if (enemyHealth <= 0) {
         return false;
     }
 
@@ -201,9 +201,29 @@ async function damage(amount, playerStats) {
     });
 
     await playerStats.save();
+
+    responses.add(`Player dealt ${amount} to the monster!`);
+
     return true;
 }
 
-async function tickRoom(playerStats) {
+async function tickRoom(playerStats, responses) {
+    const { enemyHealth } = playerStats;
+    if (enemyHealth <= 0) {
+        return;
+    }
 
+    const room = await AdventureService.DATA_INSTANCE.getRoom(playerStats.roomId);
+    const { name, attackMax, attackMin } = await AdventureService.DATA_INSTANCE.getMonster(room.monsterId);
+    const difference = attackMax - attackMin;
+    const damage = Math.random() * difference + attackMin;
+
+    playerStats.set({
+        health: playerStats.health - damage,
+    });
+
+    // TODO make playerStats.save transactional (lock at load)
+    await playerStats.save();
+
+    responses.add(`${monster.name} dealt ${damage} to Player!`);
 }

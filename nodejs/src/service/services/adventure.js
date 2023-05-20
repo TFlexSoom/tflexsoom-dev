@@ -28,10 +28,15 @@ export default class AdventureService extends Service {
         this.isOn = config?.isOn || true;
         this.limitKey = config?.limitKey || this.limitKey;
         this.gamesPerDay = config?.gamesPerDay || this.gamesPerDay;
+        this.fleeChance = config?.fleeChance || 0.5;
     }
 
     async isAdventureOn() {
         return this.isOn;
+    }
+
+    async getFleeChance() {
+        return this.fleeChance;
     }
 
     async createGame(ipAddress, classId, publicKey) {
@@ -80,7 +85,7 @@ export default class AdventureService extends Service {
         }
 
         const room = await AdventureService.DATA_INSTANCE.getRoom(playerStats?.roomId);
-        const monster = room.monsterId && await AdventureDataService.DATA_INSTANCE.getMonster(room.monsterId);
+        const monster = room.monsterId && await AdventureService.DATA_INSTANCE.getMonster(room.monsterId);
         const game = {
             player: player,
             room: room,
@@ -100,6 +105,10 @@ export default class AdventureService extends Service {
         }
 
         return health;
+    }
+
+    calculateManaPerTurn(currentLevel, benefits) {
+
     }
 
     filterCurrentAbilities(currentLevel, benefits, abilities) {
@@ -179,12 +188,82 @@ async function attackImpl(params, playerStats, responses) {
 
 async function moveImpl(params, playerStats, responses) {
     const { dest } = params;
+    const { roomId, enemyHealth } = playerStats;
+
+    const room = await AdventureService.DATA_INSTANCE.getRoom(roomId);
+
+    if (!room.outgoing.includes(dest)) {
+        return false;
+    }
+
+    if (enemyHealth > 0 && Math.random() > (await AdventureService.INSTANCE.getFleeChance())) {
+        responses.push(`The monster blocked the player!`);
+        return true;
+    }
+
+    playerStats.set({
+        roomId: dest,
+    });
+
+    await playerStats.save();
+
+    responses.push(`Player entered a new room: ${dest}`);
 
     return true;
 }
 
 async function abilityImpl(params, playerStats, responses) {
     const { abilityId } = params;
+    const { health, mana } = playerStats;
+
+    const curLevel = calculateLevel(playerStats.experience, levels);
+    const playerClass = await AdventureService.DATA_INSTANCE.getPlayerClass(classId);
+    const ability = await AdventureService.DATA_INSTANCE.getPlayerClassAbilities()[abilityId];
+    const abilitiesMaybe = await AdventureService.INSTANCE.filterCurrentAbilities(curLevel, playerClass.benefits, { [abilityId]: ability });
+
+    if (abilitiesMaybe.length <= 0) {
+        return false;
+    }
+
+    const { health: healthCost, mana: manaCost, attackMin, attackMax, healMin, healMax } = ability;
+
+    /// MANA
+    if (manaCost > mana) {
+        return false;
+    } else if (manaCost > 0) {
+        playerStats.set({
+            mana: mana - manaCost,
+        });
+
+        responses.push(`Player lost ${manaCost} mana!`);
+    }
+
+    /// HEALING
+    let healthWithHealing = health;
+    if (healMax > 0) {
+        const healDifference = healMax - healMin;
+        const heal = Math.random() * healDifference + healMin;
+        healthWithHealing += heal;
+        responses.push(`Player healed for ${heal} health`);
+    }
+
+    if (healthCost > 0) {
+        healthWithHealing -= healthCost;
+        responses.push(`Player sacrificed ${healthCost} health!`)
+    }
+
+    playerStats.set({
+        health: healthWithHealing,
+    });
+    await playerStats.save();
+
+    // DAMAGE
+    if (attackMax > 0) {
+        const attackDifference = attackMax - attackMin;
+        const attack = Math.random() * attackDifference + attackMin;
+        await damageMonster(attack, playerStats);
+    }
+
 
     await tickRoom(playerStats, responses);
     return true;
@@ -202,12 +281,17 @@ async function damageMonster(amount, playerStats, responses) {
 
     await playerStats.save();
 
-    responses.add(`Player dealt ${amount} to the monster!`);
+    responses.push(`Player dealt ${amount} to the monster!`);
 
     return true;
 }
 
 async function tickRoom(playerStats, responses) {
+    await monsterDamagePlayer(playerStats, responses);
+    await manaRegen(playerStats, responses);
+}
+
+async function monsterDamagePlayer(playerStats, responses) {
     const { enemyHealth } = playerStats;
     if (enemyHealth <= 0) {
         return;
@@ -225,5 +309,25 @@ async function tickRoom(playerStats, responses) {
     // TODO make playerStats.save transactional (lock at load)
     await playerStats.save();
 
-    responses.add(`${monster.name} dealt ${damage} to Player!`);
+    responses.push(`${name} dealt ${damage} to Player!`);
+}
+
+async function manaRegen(playerStats, responses) {
+    const { mana } = playerStats;
+
+    const curLevel = calculateLevel(playerStats.experience, levels);
+    const playerClass = await AdventureService.DATA_INSTANCE.getPlayerClass(classId);
+    const manaPerTurn = await AdventureService.INSTANCE.calculateManaPerTurn(curLevel, playerClass.benefits);
+
+    if (manaPerTurn <= 0) {
+        return;
+    }
+
+    playerStats.set({
+        mana: mana + manaPerTurn,
+    });
+
+    await playerStats.save();
+
+    responses.push(`Player regened ${manaPerTurn} mana`);
 }

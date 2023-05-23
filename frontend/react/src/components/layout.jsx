@@ -9,10 +9,11 @@ import * as React from "react"
 import Header from "./header"
 import { Link } from "gatsby"
 
-export default function Layout({ photoCredit, children }) {
+export default function Layout(props) {
+  const { photoCredit, children } = props;
   return (
     <>
-      <Header />
+      <Header {...props} />
       <div className="m-0">
         <main className="min-h-[100vh]">
           {children}

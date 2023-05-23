@@ -1,23 +1,30 @@
-import * as React from "react"
-import { Link } from "gatsby"
-import { StaticImage } from "gatsby-plugin-image";
+import * as React from "react";
+import { Link } from "gatsby";
+import WhiteLogo from "../vectors/logo_white.svg";
+import Logo from "../vectors/logo.svg";
 
-export default function Header() {
+export default function Header(props) {
+  const { isWhite } = props;
   return (
     <header className="mt-10 px-5 w-full flex flex-col items-center fixed">
       <div className="m-0 p-0 flex w-full flex-row items-center justify-between">
-        <div className="">
+        <div className="pl-10">
           <Link
             to="/"
           >
-            <StaticImage
+            <img
+              className="h-[2em]"
               alt="Enshrouded Technologies logo"
-              height={30}
-              src="../images/logo.png"
+              src={isWhite ? WhiteLogo : Logo}
             />
+
           </Link>
         </div>
-        <div className="min-w-[80%] md:min-w-[50%] flex flex-row items-center justify-between text-base md:text-lg no-underline text-slate-100">
+        <div className={
+          "min-w-[80%] md:min-w-[50%] flex flex-row items-center justify-between text-base md:text-lg no-underline" +
+          (isWhite ? " text-slate-100 " : " text-black ") +
+          ""
+        }>
           <Link to="/portfolio" className="hover:underline">
             Porfolio
           </Link>

@@ -7,13 +7,13 @@ export default function Header(props) {
   const { isWhite } = props;
   return (
     <header className="mt-10 px-5 w-full flex flex-col items-center fixed">
-      <div className="m-0 p-0 flex w-full flex-row items-center justify-between">
-        <div className="pl-10">
+      <div className="m-0 flex w-full h-[3em] flex-row items-center justify-between">
+        <div className="pl-2 md:pl-10 mr-4 w-[5em]">
           <Link
             to="/"
           >
             <img
-              className="h-[2em]"
+              className="h-[2em] hover:h-[2.2em]"
               alt="Enshrouded Technologies logo"
               src={isWhite ? WhiteLogo : Logo}
             />

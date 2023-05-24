@@ -1,7 +1,8 @@
 import * as React from "react";
 import Layout from "../components/layout";
 import Seo from "../components/seo";
-import { GatsbyImage } from "gatsby-plugin-image";
+import { GatsbyImage, getImage, getSrc } from "gatsby-plugin-image";
+import Splash from "../images/splash.jpg";
 
 const projects = [
   {
@@ -10,10 +11,9 @@ const projects = [
     profile: "../images/splash.jpg",
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
-      {id: 1, value: "Lorem"},
-      {id: 2, value: "Ipsum"},
-      {id: 3, value: "Lorem"},
-      {id: 4, value: "Ipsum"},
+      { id: 1, value: "Lorem" },
+      { id: 2, value: "Ipsum" },
+      { id: 3, value: "Lorem" },
     ]
   },
   {
@@ -22,10 +22,9 @@ const projects = [
     profile: "../images/splash.jpg",
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
-      {id: 1, value: "Lorem"},
-      {id: 2, value: "Ipsum"},
-      {id: 3, value: "Lorem"},
-      {id: 4, value: "Ipsum"},
+      { id: 1, value: "Lorem" },
+      { id: 2, value: "Ipsum" },
+      { id: 3, value: "Lorem" },
     ]
   },
   {
@@ -34,10 +33,9 @@ const projects = [
     profile: "../images/splash.jpg",
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
-      {id: 1, value: "Lorem"},
-      {id: 2, value: "Ipsum"},
-      {id: 3, value: "Lorem"},
-      {id: 4, value: "Ipsum"},
+      { id: 1, value: "Lorem" },
+      { id: 2, value: "Ipsum" },
+      { id: 3, value: "Lorem" },
     ]
   },
   {
@@ -46,35 +44,36 @@ const projects = [
     profile: "../images/splash.jpg",
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
-      {id: 1, value: "Lorem"},
-      {id: 2, value: "Ipsum"},
-      {id: 3, value: "Lorem"},
-      {id: 4, value: "Ipsum"},
+      { id: 1, value: "Lorem" },
+      { id: 2, value: "Ipsum" },
+      { id: 3, value: "Lorem" },
     ]
   }
 ]
 
 export default function PortfolioPage(props) {
+
   return (
-    <Layout isWhite={true}>
+    <Layout isWhite={true} withButton={true}>
       <div className="flex flex-col items-center bg-black w-screen min-h-screen">
-        <div className="flex flex-col items-center py-[10%] w-screen">
+        <div className="flex flex-row flex-wrap justify-center p-[10%] w-screen">
           {projects.map(item =>
             <section className={
               " flex flex-col items-center bg-slate-900 " +
-              " mt-10 p-5 min-w-[80%] text-white "
+              " my-10 mx-20 py-5 px-20 text-white " +
+              " rounded-md "
             }>
-              <h2 className="">
+              <h2 className="text-2xl">
                 {item.name}
               </h2>
               <div className="flex flex-row items-center">
                 <GatsbyImage image={item.screencap} />
                 <GatsbyImage image={item.profile} />
               </div>
-              <h3 className="italic">
+              <h3 className="italic text-xl">
                 {item.tagline}
               </h3>
-              <ul>
+              <ul className=" list-disc">
                 {item.accomplishments.map(accomplishment =>
                   <li key={accomplishment.id}>{accomplishment.value}</li>
                 )}

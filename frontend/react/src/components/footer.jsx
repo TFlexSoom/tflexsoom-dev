@@ -120,7 +120,7 @@ export default function Footer(props) {
                         <div className="md:grid md:grid-cols-2 md:gap-8">
                             <div>
                                 <h3 className="text-sm font-semibold leading-6 text-white">Info</h3>
-                                <ul role="list" className="mt-6 space-y-4">
+                                <ul className="mt-6 space-y-4">
                                     {navigation.information.map((item) => (
                                         <li key={item.name}>
                                             <a href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
@@ -132,7 +132,7 @@ export default function Footer(props) {
                             </div>
                             <div className="mt-10 md:mt-0">
                                 <h3 className="text-sm font-semibold leading-6 text-white">Social</h3>
-                                <ul role="list" className="mt-6 space-y-4">
+                                <ul className="mt-6 space-y-4">
                                     {navigation.social.map((item) => (
                                         <li key={item.name}>
                                             <a href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
@@ -146,7 +146,7 @@ export default function Footer(props) {
                         <div className="md:grid md:grid-cols-2 md:gap-8">
                             <div>
                                 <h3 className="text-sm font-semibold leading-6 text-white">Legal</h3>
-                                <ul role="list" className="mt-6 space-y-4">
+                                <ul className="mt-6 space-y-4">
                                     {navigation.legal.map((item) => (
                                         <li key={item.name}>
                                             <a href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">
@@ -158,7 +158,7 @@ export default function Footer(props) {
                             </div>
                             <div className="mt-10 md:mt-0">
                                 <h3 className="text-sm font-semibold leading-6 text-white">Apps</h3>
-                                <ul role="list" className="mt-6 space-y-4">
+                                <ul className="mt-6 space-y-4">
                                     {navigation.applications.map((item) => (
                                         <li key={item.name}>
                                             <a href={item.href} className="text-sm leading-6 text-gray-300 hover:text-white">

@@ -1,12 +1,13 @@
 import * as React from "react";
+import { graphql } from "gatsby"
 import Layout from "../components/layout";
 import Seo from "../components/seo";
-import { GatsbyImage, getImage, getSrc } from "gatsby-plugin-image";
-import Splash from "../images/splash.jpg";
+import { GatsbyImage } from "gatsby-plugin-image";
 
 const projects = [
   {
     name: "Lorem Ipsum",
+    customer: "John Doe",
     screencap: "../images/splash.jpg",
     profile: "../images/splash.jpg",
     tagline: "Lorem Ipsum Lorem Ipsum",
@@ -18,6 +19,7 @@ const projects = [
   },
   {
     name: "Lorem Ipsum",
+    customer: "John Doe",
     screencap: "../images/splash.jpg",
     profile: "../images/splash.jpg",
     tagline: "Lorem Ipsum Lorem Ipsum",
@@ -29,6 +31,7 @@ const projects = [
   },
   {
     name: "Lorem Ipsum",
+    customer: "John Doe",
     screencap: "../images/splash.jpg",
     profile: "../images/splash.jpg",
     tagline: "Lorem Ipsum Lorem Ipsum",
@@ -40,6 +43,7 @@ const projects = [
   },
   {
     name: "Lorem Ipsum",
+    customer: "John Doe",
     screencap: "../images/splash.jpg",
     profile: "../images/splash.jpg",
     tagline: "Lorem Ipsum Lorem Ipsum",
@@ -51,14 +55,25 @@ const projects = [
   }
 ]
 
+export const query = graphql`
+  query {
+    file(relativePath: { eq: "splash.jpg" }) {
+      childImageSharp {
+        gatsbyImageData
+      }
+    }
+  }
+`
+
 export default function PortfolioPage(props) {
+  const { data } = props;
 
   return (
     <Layout isWhite={true} withButton={true}>
       <div className="flex flex-col items-center bg-black w-screen min-h-screen">
         <div className="flex flex-row flex-wrap justify-center p-[10%] w-screen">
-          {projects.map(item =>
-            <section className={
+          {projects.map((item, index) =>
+            <section key={index} className={
               " flex flex-col items-center bg-slate-900 " +
               " my-10 mx-20 py-5 px-20 text-white " +
               " rounded-md "
@@ -67,8 +82,8 @@ export default function PortfolioPage(props) {
                 {item.name}
               </h2>
               <div className="flex flex-row items-center">
-                <GatsbyImage image={item.screencap} />
-                <GatsbyImage image={item.profile} />
+                <GatsbyImage alt={`Image of the ${item.name} project!`} image={data?.file?.childImageSharp?.gatsbyImageData} />
+                <GatsbyImage alt={`Image of the customer ${item.customer}`} image={data?.file?.childImageSharp?.gatsbyImageData} />
               </div>
               <h3 className="italic text-xl">
                 {item.tagline}

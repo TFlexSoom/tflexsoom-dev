@@ -1,15 +1,21 @@
 import * as React from "react";
-import { graphql } from "gatsby"
+import { Link, graphql } from "gatsby"
 import Layout from "../components/layout";
 import Seo from "../components/seo";
 import { GatsbyImage } from "gatsby-plugin-image";
 
+const images = {
+  splash: "splash",
+  profile: "example",
+}
+
 const projects = [
   {
     name: "Lorem Ipsum",
+    href: "/",
     customer: "John Doe",
-    screencap: "../images/splash.jpg",
-    profile: "../images/splash.jpg",
+    screencap: images.splash,
+    profile: images.profile,
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
       { id: 1, value: "Lorem" },
@@ -20,8 +26,8 @@ const projects = [
   {
     name: "Lorem Ipsum",
     customer: "John Doe",
-    screencap: "../images/splash.jpg",
-    profile: "../images/splash.jpg",
+    screencap: images.splash,
+    profile: images.profile,
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
       { id: 1, value: "Lorem" },
@@ -32,8 +38,8 @@ const projects = [
   {
     name: "Lorem Ipsum",
     customer: "John Doe",
-    screencap: "../images/splash.jpg",
-    profile: "../images/splash.jpg",
+    screencap: images.splash,
+    profile: images.profile,
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
       { id: 1, value: "Lorem" },
@@ -44,8 +50,8 @@ const projects = [
   {
     name: "Lorem Ipsum",
     customer: "John Doe",
-    screencap: "../images/splash.jpg",
-    profile: "../images/splash.jpg",
+    screencap: images.splash,
+    profile: images.profile,
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
       { id: 1, value: "Lorem" },
@@ -57,9 +63,14 @@ const projects = [
 
 export const query = graphql`
   query {
-    file(relativePath: { eq: "splash.jpg" }) {
-      childImageSharp {
-        gatsbyImageData
+    allFile(filter: {relativePath: {regex: "/portfolio/"}}) {
+      nodes { 
+        name
+        childImageSharp {
+          gatsbyImageData(
+            placeholder: BLURRED
+          )
+        }
       }
     }
   }
@@ -67,37 +78,72 @@ export const query = graphql`
 
 export default function PortfolioPage(props) {
   const { data } = props;
+  console.log(data);
 
   return (
     <Layout isWhite={true} withButton={true}>
       <div className="flex flex-col items-center bg-black w-screen min-h-screen">
-        <div className="flex flex-row flex-wrap justify-center p-[10%] w-screen">
-          {projects.map((item, index) =>
-            <section key={index} className={
-              " flex flex-col items-center bg-slate-900 " +
-              " my-10 mx-20 py-5 px-20 text-white " +
-              " rounded-md "
-            }>
-              <h2 className="text-2xl">
-                {item.name}
-              </h2>
-              <div className="flex flex-row items-center">
-                <GatsbyImage alt={`Image of the ${item.name} project!`} image={data?.file?.childImageSharp?.gatsbyImageData} />
-                <GatsbyImage alt={`Image of the customer ${item.customer}`} image={data?.file?.childImageSharp?.gatsbyImageData} />
-              </div>
-              <h3 className="italic text-xl">
-                {item.tagline}
-              </h3>
-              <ul className=" list-disc">
-                {item.accomplishments.map(accomplishment =>
-                  <li key={accomplishment.id}>{accomplishment.value}</li>
-                )}
-              </ul>
-            </section>
-          )}
+        <div className="flex flex-row flex-wrap justify-center p-[5%] w-screen">
+          {projects.map((item, index) => <PortfolioItem key={index} data={data} item={item} {...props} />)}
         </div>
       </div>
     </Layout>
+  );
+}
+
+function PortfolioItem(props) {
+  const { data, item } = props;
+  const { name, screencap, profile } = item;
+  const nodes = data?.allFile?.nodes;
+  let nodesMap = {}
+  if (nodes) {
+    console.log(nodes);
+    for (const node of nodes) {
+      nodesMap[node.name] = node.childImageSharp.gatsbyImageData;
+    }
+  }
+
+  const WithLink = (props) => {
+    const { item, render } = props;
+    const { href } = item;
+
+    if (href) {
+      return (
+        <Link to={href}>
+          {render}
+        </Link>
+      );
+    }
+
+    return render;
+  }
+
+  return (
+    <section className={
+      " flex flex-col items-center bg-slate-900 " +
+      " my-10 mx-20 py-5 px-20 text-white " +
+      " rounded-md "
+    }>
+      <WithLink item={item} render={
+        <h2 className="text-2xl"> {name} </h2>
+      } />
+
+      <div className="flex flex-row items-center">
+        <WithLink item={item} render={
+          <GatsbyImage className="m-5 max-w-[400px] max-h-[250px]" alt={`Image of the ${name} project!`} image={nodesMap[screencap]} />
+        } />
+
+        <GatsbyImage className="m-5 max-w-[200px] min-h-[250px]" alt={`Image of the customer ${item.customer}`} image={nodesMap[profile]} />
+      </div>
+      <h3 className="italic text-xl">
+        {item.tagline}
+      </h3>
+      <ul className=" list-disc">
+        {item.accomplishments.map(accomplishment =>
+          <li key={accomplishment.id}>{accomplishment.value}</li>
+        )}
+      </ul>
+    </section>
   );
 }
 

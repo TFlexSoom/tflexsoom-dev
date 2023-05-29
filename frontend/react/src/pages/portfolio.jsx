@@ -4,9 +4,12 @@ import Layout from "../components/layout";
 import Seo from "../components/seo";
 import { GatsbyImage } from "gatsby-plugin-image";
 
-const images = {
+const avatars = {
+  example: "example",
+}
+
+const screencaps = {
   splash: "splash",
-  profile: "example",
 }
 
 const projects = [
@@ -14,8 +17,8 @@ const projects = [
     name: "Lorem Ipsum",
     href: "/",
     customer: "John Doe",
-    screencap: images.splash,
-    profile: images.profile,
+    screencap: screencaps.splash,
+    avatar: avatars.example,
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
       { id: 1, value: "Lorem" },
@@ -26,8 +29,8 @@ const projects = [
   {
     name: "Lorem Ipsum",
     customer: "John Doe",
-    screencap: images.splash,
-    profile: images.profile,
+    screencap: screencaps.splash,
+    avatar: avatars.example,
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
       { id: 1, value: "Lorem" },
@@ -38,8 +41,8 @@ const projects = [
   {
     name: "Lorem Ipsum",
     customer: "John Doe",
-    screencap: images.splash,
-    profile: images.profile,
+    screencap: screencaps.splash,
+    avatar: avatars.example,
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
       { id: 1, value: "Lorem" },
@@ -50,8 +53,8 @@ const projects = [
   {
     name: "Lorem Ipsum",
     customer: "John Doe",
-    screencap: images.splash,
-    profile: images.profile,
+    screencap: screencaps.splash,
+    avatar: avatars.example,
     tagline: "Lorem Ipsum Lorem Ipsum",
     accomplishments: [
       { id: 1, value: "Lorem" },
@@ -63,11 +66,25 @@ const projects = [
 
 export const query = graphql`
   query {
-    allFile(filter: {relativePath: {regex: "/portfolio/"}}) {
+    screencaps: allFile(filter: {relativePath: {regex: "/portfolio/screencaps/"}}) {
       nodes { 
         name
         childImageSharp {
           gatsbyImageData(
+            width: 350
+            placeholder: BLURRED
+          )
+        }
+      }
+    }
+
+    avatars: allFile(filter: {relativePath: {regex: "/portfolio/avatars/"}}) {
+      nodes { 
+        name
+        childImageSharp {
+          gatsbyImageData(
+            width: 150
+            aspectRatio: 0.75
             placeholder: BLURRED
           )
         }
@@ -78,12 +95,11 @@ export const query = graphql`
 
 export default function PortfolioPage(props) {
   const { data } = props;
-  console.log(data);
 
   return (
     <Layout isWhite={true} withButton={true}>
       <div className="flex flex-col items-center bg-black w-screen min-h-screen">
-        <div className="flex flex-row flex-wrap justify-center p-[5%] w-screen">
+        <div className="flex flex-row flex-wrap justify-center py-[60px] md:p-[5%] w-screen">
           {projects.map((item, index) => <PortfolioItem key={index} data={data} item={item} {...props} />)}
         </div>
       </div>
@@ -93,14 +109,16 @@ export default function PortfolioPage(props) {
 
 function PortfolioItem(props) {
   const { data, item } = props;
-  const { name, screencap, profile } = item;
-  const nodes = data?.allFile?.nodes;
-  let nodesMap = {}
-  if (nodes) {
-    console.log(nodes);
-    for (const node of nodes) {
-      nodesMap[node.name] = node.childImageSharp.gatsbyImageData;
+  const { name, screencap, avatar } = item;
+  const imageMap = {};
+
+  for (const nodeType of Object.keys(data) ) {
+    const nodeTypeImageMap = {};
+    for (const node of data[nodeType]?.nodes) {
+      nodeTypeImageMap[node.name] = node.childImageSharp.gatsbyImageData;
     }
+
+    imageMap[nodeType] = nodeTypeImageMap;
   }
 
   const WithLink = (props) => {
@@ -121,21 +139,31 @@ function PortfolioItem(props) {
   return (
     <section className={
       " flex flex-col items-center bg-slate-900 " +
-      " my-10 mx-20 py-5 px-20 text-white " +
+      " my-10 md:mx-20 py-2 md:py-5 px-2 md:px-20 text-white " +
       " rounded-md "
     }>
       <WithLink item={item} render={
-        <h2 className="text-2xl"> {name} </h2>
+        <h2 className="text-xl md:text-2xl"> {name} </h2>
       } />
 
-      <div className="flex flex-row items-center">
+      <div className="flex flex-col md:flex-row items-center justify-center md:justify-start">
         <WithLink item={item} render={
-          <GatsbyImage className="m-5 max-w-[400px] max-h-[250px]" alt={`Image of the ${name} project!`} image={nodesMap[screencap]} />
+          <GatsbyImage 
+            className="m-5 max-h-[250px] rounded-sm" 
+            objectFit="contain"
+            alt={`Image of the ${name} project!`} 
+            image={imageMap?.screencaps[screencap]} 
+            />
         } />
 
-        <GatsbyImage className="m-5 max-w-[200px] min-h-[250px]" alt={`Image of the customer ${item.customer}`} image={nodesMap[profile]} />
+        <GatsbyImage
+          className="m-5 min-w-[100px] max-h-[250px] rounded"
+          objectFit="contain"
+          alt={`Image of the customer ${item.customer}`} 
+          image={imageMap?.avatars[avatar]} 
+          />
       </div>
-      <h3 className="italic text-xl">
+      <h3 className="italic text-l md:text-xl">
         {item.tagline}
       </h3>
       <ul className=" list-disc">

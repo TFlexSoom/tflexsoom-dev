@@ -12,7 +12,7 @@ const links = [
 export default function Header(props) {
   const { isWhite, withButton } = props;
   return (
-    <header className="mt-10 px-5 w-full flex flex-col items-center fixed">
+    <header className="mt-10 px-5 w-full flex flex-col items-center fixed z-[1000]">
       <div className="m-0 flex w-full h-[3em] flex-row items-center justify-between">
         <div className="pl-2 md:pl-10 mr-4 w-[5em]">
           <Link
@@ -36,7 +36,7 @@ export default function Header(props) {
               key={item.name}
               to={item.href}
               className={
-                " hover:underline py-2 px-5 rounded-md " +
+                " hover:underline md:py-2 md:px-5 rounded-md " +
                 (withButton && isWhite && " bg-slate-900 ") +
                 (withButton && !isWhite && " bg-white ") +
                 ""

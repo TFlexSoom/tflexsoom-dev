@@ -11,7 +11,7 @@ about themselves and website.
 export default function TermsOfServicePage(props) {
   return (
     <SinglePage
-      headline="TermsOfService"
+      headline="Terms of Service"
       description={description}
       {...props}
     />

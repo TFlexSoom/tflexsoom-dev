@@ -6,7 +6,7 @@ import Seo from "../components/seo";
 const services = [
   {
     name: "Consulting",
-    topics: ["web", "fincance", "games", "robotics", "languages"],
+    topics: ["web", "finance", "games", "robotics", "languages"],
     price: "$500-$5000 per week",
     description: `
       I work For You for a contracted time and send periodic invoices your way.
@@ -17,7 +17,7 @@ const services = [
   },
   {
     name: "Consulting",
-    topics: ["web", "fincance", "games", "robotics", "languages"],
+    topics: ["web", "finance", "games", "robotics", "languages"],
     price: "$500-$5000 per week",
     description: `
       I work For You for a contracted time and send periodic invoices your way.
@@ -28,7 +28,7 @@ const services = [
   },
   {
     name: "Consulting",
-    topics: ["web", "fincance", "games", "robotics", "languages"],
+    topics: ["web", "finance", "games", "robotics", "languages"],
     price: "$500-$5000 per week",
     description: `
       I work For You for a contracted time and send periodic invoices your way.
@@ -39,7 +39,7 @@ const services = [
   },
   {
     name: "Consulting",
-    topics: ["web", "fincance", "games", "robotics", "languages"],
+    topics: ["web", "finance", "games", "robotics", "languages"],
     price: "$500-$5000 per week",
     description: `
       I work For You for a contracted time and send periodic invoices your way.
@@ -50,7 +50,7 @@ const services = [
   },
   {
     name: "Consulting",
-    topics: ["web", "fincance", "games", "robotics", "languages"],
+    topics: ["web", "finance", "games", "robotics", "languages"],
     price: "$500-$5000 per week",
     description: `
       I work For You for a contracted time and send periodic invoices your way.
@@ -98,23 +98,21 @@ function ServiceItem(props) {
       " my-10 py-2 md:py-5 px-2 md:px-20 text-white w-[100%]" +
       " rounded-md bg-slate-900 "
     }>
-      <div className="flex flex-col items-center justify-center">
-        <WithLink item={item} render={
-          <h1 className="text-2xl">{name}</h1>
-        } />
-      </div>
+      <WithLink item={item} render={
+        <h1 className="text-3xl md:text-4xl">{name}</h1>
+      } />
       <div className={
         " flex flex-col flex-wrap items-center justify-around " +
-        " max-w-[40%] min-h-[15em]"
+        " min-h-[15em] min-w-[20em] text-lg"
       }>
         {cta &&
           <Link to={cta}>
-            <h3>Contact Me!</h3>
+            <h3 after="!" className="after:content-[attr(after)]">Contact Me</h3>
           </Link>
         }
         <div className=" flex flex-col items-center justify-center">
-          <h4 className="text-l"> Sectors </h4>
-          <ul className="flex flex-col flex-wrap max-h-[5em] mr-5 ">
+          <h4 className="text-lg"> Sectors </h4>
+          <ul className="flex flex-col flex-wrap items-start justify-around max-h-[5em] mr-5 ">
             {topics.map((item, index) =>
               <li
                 key={index}

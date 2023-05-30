@@ -97,7 +97,7 @@ export default function PortfolioPage(props) {
   const { data } = props;
 
   return (
-    <Layout isWhite={true} withButton={true}>
+    <Layout isWhite withButton>
       <div className="flex flex-col items-center bg-black w-screen min-h-screen">
         <div className="flex flex-row flex-wrap justify-center py-[60px] md:p-[5%] w-screen">
           {projects.map((item, index) => <PortfolioItem key={index} data={data} item={item} {...props} />)}
@@ -112,7 +112,7 @@ function PortfolioItem(props) {
   const { name, screencap, avatar } = item;
   const imageMap = {};
 
-  for (const nodeType of Object.keys(data) ) {
+  for (const nodeType of Object.keys(data)) {
     const nodeTypeImageMap = {};
     for (const node of data[nodeType]?.nodes) {
       nodeTypeImageMap[node.name] = node.childImageSharp.gatsbyImageData;
@@ -148,20 +148,20 @@ function PortfolioItem(props) {
 
       <div className="flex flex-col md:flex-row items-center justify-center md:justify-start">
         <WithLink item={item} render={
-          <GatsbyImage 
-            className="m-5 max-h-[250px] rounded-sm" 
+          <GatsbyImage
+            className="m-5 max-h-[250px] rounded-sm"
             objectFit="contain"
-            alt={`Image of the ${name} project!`} 
-            image={imageMap?.screencaps[screencap]} 
-            />
+            alt={`Image of the ${name} project!`}
+            image={imageMap?.screencaps[screencap]}
+          />
         } />
 
         <GatsbyImage
           className="m-5 min-w-[100px] max-h-[250px] rounded"
           objectFit="contain"
-          alt={`Image of the customer ${item.customer}`} 
-          image={imageMap?.avatars[avatar]} 
-          />
+          alt={`Image of the customer ${item.customer}`}
+          image={imageMap?.avatars[avatar]}
+        />
       </div>
       <h3 className="italic text-l md:text-xl">
         {item.tagline}

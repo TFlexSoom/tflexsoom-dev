@@ -11,7 +11,7 @@ export default function IndexPage(props) {
         userLink: "https://unsplash.com/@sandrokatalina?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText",
         galleryLink: "https://unsplash.com/photos/k1bO_VTiZSs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText",
       }}
-      isWhite={true}
+      isWhite
     >
       <section className={`flex flex-col items-center bg-[url('../images/splash.jpg')] bg-cover min-h-[100vh]`}>
         <div className="w-screen h-screen bg-[#000000B0]">

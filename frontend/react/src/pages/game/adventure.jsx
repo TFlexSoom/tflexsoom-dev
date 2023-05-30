@@ -4,7 +4,7 @@ import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 
 const NotFoundPage = () => (
-    <Layout isWhite={true}>
+    <Layout isWhite>
         <section className="flex flex-col items-center bg-cover">
             <div className="w-screen bg-[#000000B0]">
                 <h1 className="pt-[10%] text-[5em] font-serif text-center text-slate-50">

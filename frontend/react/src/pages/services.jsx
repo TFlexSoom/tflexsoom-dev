@@ -63,7 +63,7 @@ const services = [
 
 export default function ServicesPage(props) {
   return (
-    <Layout isWhite={true} withButton={true}>
+    <Layout isWhite withButton>
       <div className="flex flex-col items-center bg-black w-screen min-h-screen">
         <div className="flex flex-row flex-wrap justify-center py-[60px] md:p-[5%] w-screen">
           {services.map((item, index) => <ServiceItem key={index} item={item} {...props} />)}

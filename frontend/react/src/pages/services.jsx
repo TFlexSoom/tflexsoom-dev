@@ -95,23 +95,28 @@ function ServiceItem(props) {
   return (
     <section className={
       " flex flex-col md:flex-row items-center justify-between" +
-      " my-10 py-2 md:py-5 px-2 md:px-20 text-white w-[100%]" +
+      " my-10 py-2 md:py-5 px-2 md:px-5 lg:px-20 text-white w-[100%]" +
       " rounded-md bg-slate-900 "
     }>
       <WithLink item={item} render={
-        <h1 className="text-3xl md:text-4xl">{name}</h1>
+        <h1 className="text-3xl lg:text-4xl">{name}</h1>
       } />
       <div className={
         " flex flex-col flex-wrap items-center justify-around " +
-        " min-h-[15em] min-w-[20em] text-lg"
+        " min-h-[10em] lg:min-h-[15em] " +
+        " min-h-[10em] lg:min-w-[20em] " +
+        " text-lg "
       }>
         {cta &&
           <Link to={cta}>
             <h3 after="!" className="after:content-[attr(after)]">Contact Me</h3>
           </Link>
         }
-        <div className=" flex flex-col items-center justify-center">
-          <h4 className="text-lg"> Sectors </h4>
+        <div className={
+          " flex flex-col items-center justify-center " +
+          " text-base lg:text-lg "
+        }>
+          <h4> Sectors </h4>
           <ul className="flex flex-col flex-wrap items-start justify-around max-h-[5em] mr-5 ">
             {topics.map((item, index) =>
               <li
@@ -126,10 +131,11 @@ function ServiceItem(props) {
       </div>
       <div className={
         " flex flex-col flex-wrap items-start justify-around " +
-        " max-w-[40%] min-h-[15em]"
+        " md:max-w-[40%] min-h-[15em] " +
+        " px-2 sm:px-10 md:px-0"
       }>
-        <h2 className="text-xl">Estimated Price: {price}</h2>
-        <p className="text-wrap">
+        <h2 className="text-lg lg:text-xl">Estimated Price: {price}</h2>
+        <p className="text-wrap text-sm md:text-base">
           Description: {description}
         </p>
       </div>

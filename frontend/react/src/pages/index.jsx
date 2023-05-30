@@ -15,7 +15,7 @@ export default function IndexPage(props) {
     >
       <section className={`flex flex-col items-center bg-[url('../images/splash.jpg')] bg-cover min-h-[100vh]`}>
         <div className="w-screen h-screen bg-[#000000B0]">
-          <h1 className="pt-[20%] text-[5em] font-serif text-center text-slate-50">
+          <h1 className="pt-[20%] text-[5em] font-semibold text-center text-slate-50">
             Enshrouded Technologies LLC
           </h1>
         </div>

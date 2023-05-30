@@ -7,7 +7,7 @@ const NotFoundPage = () => (
     <Layout isWhite>
         <section className="flex flex-col items-center bg-cover">
             <div className="w-screen bg-[#000000B0]">
-                <h1 className="pt-[10%] text-[5em] font-serif text-center text-slate-50">
+                <h1 className="pt-[10%] text-[5em] font-semibold text-center text-slate-50">
                     404: Not Found
                 </h1>
                 <p className="text-center text-slate-50">

@@ -13,7 +13,7 @@ const services = [
       This work can consistent of engineering, feedback, critique, and other technical needs. Please
       reach out and let me know how we can start working together.
     `,
-    cta: "/",
+    cta: "/contact",
   },
   {
     name: "Consulting",
@@ -24,7 +24,7 @@ const services = [
       This work can consistent of engineering, feedback, critique, and other technical needs. Please
       reach out and let me know how we can start working together.
     `,
-    cta: "/",
+    cta: "/contact",
   },
   {
     name: "Consulting",
@@ -35,7 +35,7 @@ const services = [
       This work can consistent of engineering, feedback, critique, and other technical needs. Please
       reach out and let me know how we can start working together.
     `,
-    cta: "/",
+    cta: "/contact",
   },
   {
     name: "Consulting",
@@ -46,7 +46,7 @@ const services = [
       This work can consistent of engineering, feedback, critique, and other technical needs. Please
       reach out and let me know how we can start working together.
     `,
-    cta: "/",
+    cta: "/contact",
   },
   {
     name: "Consulting",
@@ -57,7 +57,7 @@ const services = [
       This work can consistent of engineering, feedback, critique, and other technical needs. Please
       reach out and let me know how we can start working together.
     `,
-    cta: "/",
+    cta: "/contact",
   },
 ]
 
@@ -109,7 +109,7 @@ function ServiceItem(props) {
       }>
         {cta &&
           <Link to={cta}>
-            <h3 after="!" className="after:content-[attr(after)]">Contact Me</h3>
+            <h3 after="!" className="after:content-[attr(after)]">Contact Us</h3>
           </Link>
         }
         <div className={

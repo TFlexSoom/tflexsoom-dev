@@ -29,6 +29,7 @@ export default function Header(props) {
         <div className={
           " min-w-[80%] md:min-w-[50%] flex flex-row items-center " +
           " justify-between text-base md:text-lg no-underline " +
+          " font-semibold " +
           (isWhite ? " text-slate-100 " : " text-black ") +
           ""
         }>

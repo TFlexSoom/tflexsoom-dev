@@ -2,7 +2,6 @@ import * as React from "react"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { Link } from "gatsby";
 
 export default function ContactPage(props) {
@@ -16,7 +15,7 @@ export default function ContactPage(props) {
           <form className="min-w-[80%]">
             <div className="border-b border-white/10 pb-12">
               <div className="mt-10">
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
+                <label htmlFor="email" className="block font-medium leading-6 text-white">
                   Email Address
                 </label>
                 <div className="mt-2">
@@ -26,23 +25,27 @@ export default function ContactPage(props) {
                       name="email"
                       id="email"
                       autoComplete="email"
-                      className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6"
+                      className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:leading-6"
                       placeholder="enshrouded-tech@example.com"
                     />
                   </div>
                 </div>
 
                 <div className="mt-4 col-span-full">
-                  <label htmlFor="message" className="block text-sm font-medium leading-6 text-white">
+                  <label htmlFor="message" className="blockfont-medium leading-6 text-white">
                     Message
                   </label>
-                  <p className="mt-3 text-sm leading-6 text-gray-400">Write a few sentences about how we can help.</p>
+                  <p className="mt-3 leading-6 text-gray-400">Write a few sentences about how we can help.</p>
                   <div className="mt-2">
                     <textarea
                       id="message"
                       name="message"
                       rows={3}
-                      className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                      className={
+                        " block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm " +
+                        " ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 " +
+                        " sm:leading-6 min-h-[30vh] "
+                      }
                       defaultValue={''}
                     />
                   </div>

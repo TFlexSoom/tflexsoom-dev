@@ -2,23 +2,14 @@ import * as React from "react"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
+import Shell from "../../components/shell"
 
 const NotFoundPage = () => (
     <Layout isWhite>
-        <section className="flex flex-col items-center bg-cover">
-            <div className="w-screen bg-[#000000B0]">
-                <h1 className="pt-[10%] text-[5em] font-semibold text-center text-slate-50">
-                    404: Not Found
-                </h1>
-                <p className="text-center text-slate-50">
-                    You just hit a route that doesn&#39;t exist... the sadness.
-                </p>
-            </div>
-        </section>
-
+        <Shell />
     </Layout>
 )
 
-export const Head = () => <Seo title="404: Not Found" />
+export const Head = () => <Seo title="Adventure Game" />
 
 export default NotFoundPage

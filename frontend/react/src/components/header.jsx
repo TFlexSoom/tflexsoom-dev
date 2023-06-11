@@ -6,7 +6,7 @@ import Logo from "../vectors/logo.svg";
 const links = [
   { name: "Portfolio", href: "/portfolio" },
   { name: "Services", href: "/services" },
-  { name: "Adventure", href: "/game/adventure" },
+  { name: "Adventure", href: "/games/adventure" },
 ]
 
 export default function Header(props) {
@@ -47,7 +47,7 @@ export default function Header(props) {
             </Link>
           )}
         </div>
-        <div className=""></div>
+        <div className=" pl-2 md:pl-10 sm:mr-4 w-[2em] md:w-[5em] "></div>
       </div>
     </header>
   );

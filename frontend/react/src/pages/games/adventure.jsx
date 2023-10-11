@@ -4,6 +4,28 @@ import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Shell from "../../components/shell"
 
+function requestToServer(command, args) {
+
+}
+
+function infoImpl(command, args) {
+
+}
+
+function newGameImpl(command, args) {
+    
+}
+
+const commands = {
+    "ATTACK": requestToServer,
+    "MOVE": requestToServer,
+    "ABILITY": requestToServer,
+    "LAST": infoImpl,
+    "HELP": infoImpl, // TODO
+    "NEW": newGameImpl,
+    "STATS": infoImpl, // TODO
+}
+
 export default function AdventureGame() {
     return (
         <Layout isWhite>

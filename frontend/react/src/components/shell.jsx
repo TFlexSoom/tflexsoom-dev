@@ -14,11 +14,28 @@ function submitCommandImpl({
 }) {
   event.preventDefault();
 
+  // Always clear input buffer on submission
+  setInputBuffer("");
+  
+  // Always reset buffer nav
+  setCommandBufferNav(-1);
 
+  // Always add input buffer to command buffer
+  commandBuffer.push(inputBuffer);
+  setCommandBuffer(inputBuffer);
 
+  const [commandUncased, ...args] = inputBuffer.split(" ");
+  const command = commandUncased.toUpperCase();
+
+  if(! commands.contains(command)) {
+    textBuffer.push(`Command "${command}" does not exist!`);
+    setTextBuffer(textBuffer);
+  }
+
+  onSubmitCommand(command, args);
 }
 
-export default function SinglePage(props) {
+export default function Shell(props) {
   const { commands, onSubmitCommand, prefix } = props;
 
   const [commandBufferNav, setCommandBufferNav] = React.useState(-1);
@@ -30,8 +47,6 @@ export default function SinglePage(props) {
       : ""
   );
   
-  // Grab last 20 lines
-  // Join by newline
   const bufferFormatted = textBuffer.slice(textBuffer.length - 20, textBuffer.length).join('\n');
 
   return (

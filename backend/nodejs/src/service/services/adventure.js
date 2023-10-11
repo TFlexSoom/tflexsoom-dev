@@ -108,7 +108,15 @@ export default class AdventureService extends Service {
     }
 
     calculateManaPerTurn(currentLevel, benefits) {
+        let mana = 0;
 
+        for (const benefit of benefits) {
+            if (benefit.level <= currentLevel) {
+                mana += benefit.mana;
+            }
+        }
+
+        return mana;
     }
 
     filterCurrentAbilities(currentLevel, benefits, abilities) {

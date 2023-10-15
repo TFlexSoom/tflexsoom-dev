@@ -11,6 +11,7 @@ export default class AdventureDataService extends Service {
     static INSTANCE = new AdventureDataService();
     isOn = false;
     static VERIFIER = createVerify('rsa-sha256');
+    static VERIFIER_OPTIONS = {};
     rooms = {};
     monsters = {};
     playerLevels = {};

@@ -1,8 +1,7 @@
 import Service from '../index.js';
 import ConfigurationService from './configurator.js';
 import DatabaseService from './database.js';
-
-import { createVerify } from 'node:crypto';
+import { jwtVerify, importJWK } from 'jose';
 
 import pkg from 'sequelize';
 const { Model, DataTypes } = pkg;
@@ -10,8 +9,8 @@ const { Model, DataTypes } = pkg;
 export default class AdventureDataService extends Service {
     static INSTANCE = new AdventureDataService();
     isOn = false;
-    static VERIFIER = createVerify('rsa-sha256');
-    static VERIFIER_OPTIONS = {};
+
+    static verifyAlg = 'PS256'
     rooms = {};
     monsters = {};
     playerLevels = {};
@@ -156,17 +155,28 @@ export default class AdventureDataService extends Service {
         return stats;
     }
 
-    async getPlayerStats(playerId, signage) {
-        const playerStats = PlayerStats.findByPk(playerId);
+    async getPlayerStats(playerId, signature) {
+        const playerStats = await PlayerStats.findByPk(playerId);
         if (!playerStats) {
             console.log(`${playerId} does not exist!`);
             return null;
         }
 
-        VERIFIER.update(signage);
-        const key = playerStats.publicKey;
-        if (!VERIFIER.verify(VERIFIER_OPTIONS, key, 'utf8')) {
-            console.log("Invalid Signature!");
+        const publicKeyImported = await importJWK(playerStats.publicKey, verifyAlg);
+
+        try {
+            const { payload, protectedHeader } = await jwtVerify(signature, publicKeyImported, {});
+
+            if (protectedHeader !== verifyAlg) {
+                console.log("Invalid Signature!");
+                return null;
+            } else if (payload !== JSON.stringify(playerStats)) {
+                console.log(JSON.stringify(playerStats))
+                console.log("Invalid Signature!");
+                return null;
+            }
+        } catch (err) {
+            console.log(`error verifying: ${err}`);
             return null;
         }
 

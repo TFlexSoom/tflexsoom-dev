@@ -16,7 +16,10 @@ router.get("/adventure/playing", async (req, res, next) => {
 });
 
 router.post("/adventure", async (req, res, next) => {
-    const game = await adventure.createGame(req.ip, req.query?.class, req.query?.key);
+    const game = await adventure.createGame(req.ip, req.query?.class, decodeURIComponent(req.query?.key));
+
+    console.log(`MSG RESP ${JSON.stringify(game)}`)
+
     return res.status(200).send(game);
 });
 
@@ -30,7 +33,7 @@ router.get("/adventure/{playerId}", async (req, res, next) => {
 });
 
 router.post("/adventure/{playerId}", async (req, res, next) => {
-    const msg = await adventure.makeMove(req.params.playerId, req.query?.signage, req.query?.action);
+    const msg = await adventure.makeMove(req.params.playerId, decodeURIComponent(req.query?.signature), req.query?.action);
     if (msg.response === "") {
         return res.status(400).send(msg);
     }

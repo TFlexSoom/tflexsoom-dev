@@ -6,6 +6,7 @@
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
     "@heroicons/react": "^2.0.18",
+    "@peculiar/webcrypto": "^1.4.3",
     "@tailwindcss/forms": "^0.5.3",
     "autoprefixer": "^10.4.14",
     "gatsby": "^5.9.1",
@@ -15,6 +16,7 @@
     "gatsby-plugin-sharp": "^5.9.0",
     "gatsby-source-filesystem": "^5.9.0",
     "gatsby-transformer-sharp": "^5.9.0",
+    "jose": "^4.15.4",
     "postcss": "^8.4.23",
     "react": "^18.2.0",
     "react-cookie": "^6.1.1",

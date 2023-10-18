@@ -134,12 +134,12 @@ export default class AdventureService extends Service {
         return filteredAbilities;
     }
 
-    async makeMove(playerId, signage, action, params) {
+    async makeMove(playerId, randomData, signature, action, params) {
         if (!this.isOn) {
             return RESPONSES.turnedOff(null);
         }
 
-        const playerStats = await AdventureService.DATA_INSTANCE.getPlayerStats(playerId, signage);
+        const playerStats = await AdventureService.DATA_INSTANCE.getPlayerStats(playerId, randomData, signature);
         if (!playerStats) {
             return AdventureService.RESPONSES.unauthorized(null);
         }

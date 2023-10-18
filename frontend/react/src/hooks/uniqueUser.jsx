@@ -1,32 +1,69 @@
 import * as React from "react";
 import { useCookies } from "react-cookie";
+import { SignJWT, generateKeyPair, exportJWK, importJWK } from "jose";
 
-import { generateKeyPairSync, createSign, randomBytes } from 'node:crypto';
+const alg = "PS256";
 
-function genSignature() {
-  const signer = createSign('rsa-sha256');
+async function genKeys(setCookie) {
+    const { privateKey, publicKey } = await generateKeyPair(alg, { extractable: true });
 
-  return () => {
-    const randomBuffer = randomBytes(256).toString('utf-8');
-    const signerCopy = signer.update(randomBuffer);
-    return {random: randomBuffer, signed: signerCopy.sign()}
-  }
+    const privateKeySaved = await exportJWK(privateKey);
+    const publicKeySaved = await exportJWK(publicKey);
+
+    setCookie('privateKey', privateKeySaved);
+    setCookie('publicKey', publicKeySaved);
+
+    return { privateKey, publicKey };
 }
 
-export default function UniqueUserProvider(props) {
-  const [cookie, setCoookie]  = useCookies(['uniqueUser']); 
+async function importKeys(cookie) {
+    const privateKey = await importJWK({ ext: true, ...cookie?.privateKey }, alg);
+    const publicKey = await importJWK({ ext: true, ...cookie?.publicKey }, alg);
+    return { privateKey, publicKey };
+}
 
-  const { privateKey, publicKey } = cookie || generateKeyPairSync('rsa');
+async function genSignature(privateKey, payload) {
+    const signedData = await new SignJWT(payload)
+        .setProtectedHeader({ alg })
+        .setIssuedAt()
+        .setExpirationTime('5m')
+        .sign(privateKey)
+    return signedData;
+}
 
-  setCoookie({privateKey, publicKey})
+const UniqueUser = React.createContext(null);
 
-  return (
-    <UniqueUser.Provider 
-      publicKey={publicKey} 
-      privateKey={privateKey} 
-      genSignature={genSignature}
-    >
-      {...props}
-    </UniqueUser.Provider>
-  );
+export function useUniqueUser() {
+    const ctxt = React.useContext(UniqueUser);
+    return ctxt;
+}
+
+export function UniqueUserProvider({ children }) {
+    const [cookie, setCookie] = useCookies(['privateKey', 'publicKey']);
+    const [keys, setKeys] = React.useState(null)
+
+    if ((cookie?.privateKey || null) === null) {
+        genKeys(setCookie).then(({ privateKey, publicKey }) => {
+            console.log("GENERATED KEY");
+            setKeys({ privateKey, publicKey });
+        });
+    } else if (keys == null) {
+        importKeys(cookie).then(({ privateKey, publicKey }) => {
+            console.log("LOADED KEY")
+            setKeys({ privateKey, publicKey });
+        })
+    }
+
+
+    return (
+        <UniqueUser.Provider
+            value={{
+                publicKey: keys?.publicKey,
+                genSignature: genSignature.bind(null, keys?.privateKey),
+            }}
+
+        >
+            {children}
+        </UniqueUser.Provider>
+    );
 }

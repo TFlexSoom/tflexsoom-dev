@@ -1,11 +1,9 @@
 import express from 'express';
+import cors from 'cors';
 import { readdirSync } from 'fs';
 import ConfigurationService from '../service/services/configurator.js';
 
 const app = express();
-
-// Plugins
-app.use(express.json());
 
 // Handlers
 const files = readdirSync('src/handler/handlers');
@@ -14,9 +12,20 @@ for (const file of files) {
     app.use(importedFile.router);
 }
 
-const configurator = ConfigurationService.INSTANCE;
-
 export async function serve() {
-    const port = configurator?.port || 8080;
+    const configurator = ConfigurationService.INSTANCE;
+
+    const corsOptions = {
+        origin: true,
+        optionsSuccessStatus: 204,
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        preflightContinue: true,
+    }
+
+    // Plugins
+    app.use(express.json());
+    app.use(cors(corsOptions));
+
+    const port = configurator.getConfiguration()?.port || 8080;
     app.listen(port);
 }

@@ -1,27 +1,40 @@
 import * as React from "react"
 import SinglePage from "../components/singlePage"
 import Seo from "../components/seo"
-import { StaticImage } from "gatsby-plugin-image";
-const description = `
-This is a description about this about page because I like writing about pages a
-lot. I think everyone should be writing out great about pages to detail to the users
-about themselves and website.
-`;
+
+function Description() {
+    return (
+        <>
+            Enshrouded Technologies LLC is a technology consulting company.
+            Please check out our portfolio and services!
+            <br />
+            <br />
+
+            Enshrouded Technologies LLC is owned by Tristan Hilbert (aka TFlexSoom).
+            We provide dignified technical leadership, cloud service development,
+            and information technology structuring.
+            Through contracted sessions we provide services that move
+            companies forward into modern technologies.
+            <br />
+            <br />
+
+            Enshrouded Technologies LLC also develops its own cloud solutions, hobbyist tooling,
+            and video games. Working out of Los Angeles, California we sit on the cutting edge
+            of software development, working with all kinds of clients to offer the best technical solutions.
+        </>
+    )
+}
 
 export default function AboutPage(props) {
-  return (
-    <SinglePage
-      headline="About Us"
-      description={description}
-      imageRender={<StaticImage
-        src="../images/portfolio/avatars/example.jpg"
-        alt="Image of Tristan Hilbert, owner of Enshrouded Technologies"
-        width={300}
-        height={400}
-      />}
-      {...props}
-    />
-  );
+    const desc = <Description />
+
+    return (
+        <SinglePage
+            headline="About Us"
+            description={desc}
+            {...props}
+        />
+    );
 }
 
 export const Head = () => <Seo title="About Us" />

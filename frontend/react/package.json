@@ -1,5 +1,5 @@
 {
-    "name": "Enshrouded Technologies Landing",
+    "name": "tflexsoom-dev",
     "private": true,
     "description": "Project for Landing Page as Branding for Enshrouded Technologies",
     "version": "0.1.0",
@@ -25,6 +25,11 @@
         "react-cookie": "^6.1.1",
         "react-dom": "^18.2.0",
         "tailwindcss": "^3.3.2"
+    },
+    "overrides": {
+        "react-server-dom-webpack@0.0.0-experimental-c8b778b7f-20220825": {
+            "react": "^18.2.0"
+        }
     },
     "devDependencies": {
         "prettier": "^2.8.8"

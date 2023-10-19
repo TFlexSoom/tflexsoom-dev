@@ -24,7 +24,7 @@
     },
     "homepage": "https://github.com/TFlexSoom/tflexsoom-dev#readme",
     "engines": {
-        "node": ">=19.8.1"
+        "node": ">=18.16.1"
     },
     "dependencies": {
         "commonjs-extension-resolution-loader": "^0.1.0",

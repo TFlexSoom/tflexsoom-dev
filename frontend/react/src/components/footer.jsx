@@ -11,10 +11,9 @@ const navigation = {
         { name: 'Contact', href: '/contact' }
     ],
     applications: [
-        { name: 'Adventure', href: '/games/adventure' },
+        // { name: 'Adventure', href: '/games/adventure' },
     ],
     legal: [
-        { name: 'Claim', href: '/claims' },
         { name: 'Privacy', href: '/privacy' },
         { name: 'Terms', href: '/tos' },
     ],

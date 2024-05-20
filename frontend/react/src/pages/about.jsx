@@ -5,7 +5,7 @@ import Seo from "../components/seo"
 function Description() {
     return (
         <>
-            Enshrouded Technologies LLC is a technology consulting company.
+            Enshrouded Technologies LLC is a technology company.
             Please check out our portfolio and services!
             <br />
             <br />

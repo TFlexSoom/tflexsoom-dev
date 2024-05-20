@@ -6,7 +6,7 @@ import Logo from "../vectors/logo.svg";
 const links = [
     { name: "About Us", href: "/about" },
     { name: "Portfolio", href: "/portfolio" },
-    { name: "Services", href: "/services" },
+    // { name: "Services", href: "/services" },
     //   { name: "Adventure", href: "/games/adventure" },
 ]
 

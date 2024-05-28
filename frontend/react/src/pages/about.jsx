@@ -6,15 +6,13 @@ function Description() {
     return (
         <>
             Enshrouded Technologies LLC is a technology company.
-            Please check out our portfolio and services!
+            Please check out our portfolio!
             <br />
             <br />
 
             Enshrouded Technologies LLC is owned by Tristan Hilbert (aka TFlexSoom).
             We provide dignified technical leadership, cloud service development,
             and information technology structuring.
-            Through contracted sessions we provide services that move
-            companies forward into modern technologies.
             <br />
             <br />
 
